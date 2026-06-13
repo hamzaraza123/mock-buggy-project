@@ -1,0 +1,115 @@
+{
+  "level_1_syntax/app.py": [
+    {
+      "bug_type": "SyntaxError",
+      "line": 6,
+      "description": "Missing colon at end of function definition for greet(name)"
+    },
+    {
+      "bug_type": "IndentationError",
+      "line": 10,
+      "description": "Tab character used for indentation inside add() in an otherwise space-indented file"
+    },
+    {
+      "bug_type": "LintError",
+      "line": 3,
+      "description": "json module imported but never used"
+    },
+    {
+      "bug_type": "BestPracticeError",
+      "line": 14,
+      "description": "Mutable default argument (options=[]) in Config.__init__; list is shared across all instances"
+    },
+    {
+      "bug_type": "LintError",
+      "line": 18,
+      "description": "Method named list shadows the built-in list type"
+    },
+    {
+      "bug_type": "LintError",
+      "line": 21,
+      "description": "Comparison to True using == instead of identity check with `is`"
+    }
+  ],
+  "level_2_logic/calculator.py": [
+    {
+      "bug_type": "LogicError",
+      "line": 2,
+      "description": "divide() performs no zero-division guard; raises ZeroDivisionError when b=0"
+    },
+    {
+      "bug_type": "LogicError",
+      "line": 5,
+      "description": "average() slices off the last element before summing (numbers[:-1]), producing a wrong result"
+    },
+    {
+      "bug_type": "LogicError",
+      "line": 8,
+      "description": "is_palindrome() is case-sensitive; 'Racecar' is not detected as a palindrome"
+    },
+    {
+      "bug_type": "LogicError",
+      "line": 11,
+      "description": "factorial() has no base case; factorial(0) and factorial(1) recurse infinitely causing RecursionError"
+    },
+    {
+      "bug_type": "LogicError",
+      "line": 14,
+      "description": "find_max() initialises max_val to 0; returns 0 for any all-negative input list"
+    }
+  ],
+  "level_3_async/api_handler.js": [
+    {
+      "bug_type": "AsyncError",
+      "line": 4,
+      "description": "fetch() call is missing await; response is a Promise object, so response.json() throws"
+    },
+    {
+      "bug_type": "LogicError",
+      "line": 9,
+      "description": "Promise.all receives the original ids array instead of the results (Promise[]) array"
+    },
+    {
+      "bug_type": "RaceCondition",
+      "line": 13,
+      "description": "Cache miss check and cache write are separated by an await; concurrent calls both miss and duplicate the fetch"
+    },
+    {
+      "bug_type": "UnhandledRejection",
+      "line": 19,
+      "description": "loadDashboard() has no .catch() and is not async/try-catch; rejections are silently swallowed"
+    },
+    {
+      "bug_type": "AsyncError",
+      "line": 25,
+      "description": "async callback inside forEach is not awaited by forEach; processUsers resolves before any fetch completes"
+    }
+  ],
+  "level_4_security/database.py": [
+    {
+      "bug_type": "SecurityError",
+      "line": 12,
+      "description": "SQL injection: username is interpolated directly into the query string instead of using parameterised queries"
+    },
+    {
+      "bug_type": "SecurityError",
+      "line": 19,
+      "description": "Password hashed with MD5 which is cryptographically broken; no salt is applied"
+    },
+    {
+      "bug_type": "SecurityError",
+      "line": 24,
+      "description": "pickle.loads() deserialises untrusted bytes, enabling arbitrary code execution"
+    },
+    {
+      "bug_type": "SecurityError",
+      "line": 29,
+      "description": "Hardcoded plaintext credential (admin_password) committed in source code"
+    },
+    {
+      "bug_type": "SecurityError",
+      "line": 34,
+      "description": "Path traversal: filename is concatenated to base_dir without sanitisation, allowing access to arbitrary files"
+    }
+  ]
+}
