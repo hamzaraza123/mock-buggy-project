@@ -1,0 +1,73 @@
+name: Alert Band-of-Agents on Failure
+
+on:
+  issues:
+    types: [opened]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt || true
+
+      - name: Run tests
+        id: run_tests
+        run: pytest tests/ -v
+        continue-on-error: true
+
+      - name: Fire alert if tests failed
+        if: steps.run_tests.outcome == 'failure'
+        run: |
+          curl -X POST ${{ secrets.BAND_WEBHOOK_URL }}/webhooks/github \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: check_run" \
+            -H "X-Hub-Signature-256: sha256=$(echo -n '${{ toJson(github) }}' | openssl dgmac -sha256 -macopt key:${{ secrets.BAND_WEBHOOK_SECRET }})" \
+            -d '{
+              "check_run": {
+                "conclusion": "failure",
+                "head_sha": "${{ github.sha }}",
+                "output": {
+                  "summary": "pytest failed on commit ${{ github.sha }} by ${{ github.actor }}"
+                }
+              },
+              "repository": {
+                "name": "hamzaraza123/mock-buggy-project",
+                "clone_url": "https://github.com/hamzaraza123/mock-buggy-project.git"
+              }
+            }'
+
+  alert-on-issue:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'
+    steps:
+      - name: Fire alert for bug issue
+        if: contains(toJson(github.event.issue.labels.*.name), 'bug')
+        run: |
+          curl -X POST ${{ secrets.BAND_WEBHOOK_URL }}/webhooks/github \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: issues" \
+            -H "X-Hub-Signature-256: sha256=$(echo -n '${{ toJson(github.event) }}' | openssl dgmac -sha256 -macopt key:${{ secrets.BAND_WEBHOOK_SECRET }})" \
+            -d '{
+              "action": "opened",
+              "issue": {
+                "title": "${{ github.event.issue.title }}",
+                "body": "${{ github.event.issue.body }}",
+                "labels": ${{ toJson(github.event.issue.labels) }}
+              },
+              "repository": {
+                "name": "hamzaraza123/mock-buggy-project",
+                "clone_url": "https://github.com/hamzaraza123/mock-buggy-project.git"
+              }
+            }'
