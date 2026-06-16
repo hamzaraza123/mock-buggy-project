@@ -2,11 +2,11 @@ import os
 import sys
 import json
 
-def greet(name)
+def greet(name):
     print(f"Hello, {name}")
 
 def add(a, b):
-	return a + b
+    return a + b
 
 class Config:
     DEBUG = True
