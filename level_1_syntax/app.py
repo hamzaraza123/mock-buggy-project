@@ -2,7 +2,7 @@ import os
 import sys
 import json
 
-def greet(name)
+def greet(name):
     print(f"Hello, {name}")
 
 def add(a, b):
@@ -18,5 +18,5 @@ class Config:
         return self.options
 
 flag = True
-if flag == True:
+if flag:
     greet("world")
